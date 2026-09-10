@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Latih Tubi Bahasa Melayu Tahun 3</title>
+  <style>
+    :root {
+      --primary: #4A90E2;
+      --secondary: #FF9F43;
+      --success: #2ECC71;
+      --danger: #FF6B6B;
+      --purple: #8E44AD;
+      --bg: #F0F4F8;
+      --card-bg: #FFFFFF;
+      --text: #2C3E50;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      align-items: center;
+    }
+
+    #app-container {
+      width: 100%;
+      max-width: 500px;
+      min-height: 100vh;
+      background-color: var(--card-bg);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, #4A90E2, #5C6BC0);
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      z-index: 10;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-nav {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-nav:active {
+      transform: scale(0.95);
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .view {
+      flex: 1;
+      padding: 20px;
+      display: none;
+      flex-direction: column;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .view.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .menu-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .menu-header h2 {
+      margin: 0 0 5px 0;
+      color: #333;
+    }
+
+    .menu-header p {
+      margin: 0;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .grid-sets {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      padding-bottom: 20px;
+    }
+
+    .card-set {
+      background: #F8FAFC;
+      border: 2px solid #E2E8F0;
+      border-radius: 16px;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-set.unlocked {
+      background: #FFFFFF;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(74, 144, 226, 0.15);
+    }
+
+    .card-set.locked {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background: #E2E8F0;
+    }
+
+    .card-set .icon {
+      font-size: 2rem;
+      margin-bottom: 5px;
+    }
+
+    .card-set .title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .card-set .score-badge {
+      margin-top: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 10px;
+      background: #E2E8F0;
+      color: #4A5568;
+    }
+
+    .card-set.unlocked .score-badge {
+      background: #EBF8FF;
+      color: #2B6CB0;
+    }
+
+    .quiz-progress {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      font-weight: 600;
+      color: #4A5568;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 10px;
+      background-color: #E2E8F0;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4A90E2, #2ECC71);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .question-card {
+      background: #F7FAFC;
+      border: 2px solid #E2E8F0;
+      border-radius: 16px;
+      padding: 20px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      color: #2D3748;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-audio-repeat {
+      background: #E2E8F0;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-left: 10px;
+    }
+
+    .btn-audio-repeat:active {
+      transform: scale(0.9);
+      background: #CBD5E0;
+    }
+
+    .options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-option {
+      background: white;
+      border: 2px solid #CBD5E0;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #2D3748;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .btn-option:active {
+      transform: scale(0.98);
+    }
+
+    .btn-option.selected {
+      border-color: var(--primary);
+      background-color: #EBF8FF;
+      box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+    }
+
+    .btn-option.correct {
+      background-color: #DEF7EC !important;
+      border-color: #31C48D !important;
+      color: #03543F !important;
+    }
+
+    .btn-option.wrong {
+      background-color: #FDE8E8 !important;
+      border-color: #F98080 !important;
+      color: #9B1C1C !important;
+    }
+
+    .quiz-action-container {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-action {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .btn-semak { background: var(--primary); }
+    .btn-next { background: var(--success); }
+    .btn-retry-action { background: var(--secondary); }
+    .btn-jana { background: var(--purple); }
+
+    .modal-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 20px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal-card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      width: 100%;
+      max-width: 340px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .modal-card.correct-modal h3 { color: var(--success); }
+    .modal-card.wrong-modal h3 { color: var(--danger); }
+
+    .modal-icon {
+      font-size: 3.5rem;
+      margin-bottom: 10px;
+    }
+
+    .btn-modal {
+      margin-top: 15px;
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .result-card {
+      text-align: center;
+      background: #F8FAFC;
+      border-radius: 20px;
+      padding: 30px 20px;
+      border: 2px solid #E2E8F0;
+      margin-top: 20px;
+    }
+
+    .result-score {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 15px 0;
+    }
+
+    .badge-status {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .badge-pass { background: #DEF7EC; color: #03543F; }
+    .badge-fail { background: #FDE8E8; color: #9B1C1C; }
+  </style>
+</head>
+<body>
+
+  <div id="app-container">
+    <header>
+      <h1>Latih Tubi BM Tahun 3</h1>
+      <div class="nav-btns">
+        <button class="btn-nav" onclick="goHome()">🏠 Utama</button>
+        <button class="btn-nav" onclick="confirmReset()">🔄 Semula</button>
+      </div>
+    </header>
+
+    <div id="view-menu" class="view active">
+      <div class="menu-header">
+        <h2>Pilih Set Latihan</h2>
+        <p>Capai sekurang-kurangnya 50 markah untuk buka set seterusnya.</p>
+      </div>
+      <div id="sets-grid" class="grid-sets"></div>
+    </div>
+
+    <div id="view-quiz" class="view">
+      <div class="quiz-progress">
+        <span id="quiz-set-title">Set 1</span>
+        <span id="quiz-step-text">Soalan 1/10</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div id="progress-bar-fill" class="progress-bar-fill"></div>
+      </div>
+
+      <div class="question-card">
+        <span id="question-text">Memuatkan soalan...</span>
+        <button class="btn-audio-repeat" onclick="ulangBacaSoalan()" title="Dengar Suara Perempuan Melayu">🔊</button>
+      </div>
+
+      <div id="options-container" class="options-container"></div>
+
+      <div class="quiz-action-container">
+        <button id="btn-semak" class="btn-action btn-semak" onclick="semakJawapan()">Semak Jawapan</button>
+        <button id="btn-next" class="btn-action btn-next" style="display: none;" onclick="keSoalanSeterusnya()">Seterusnya ➔</button>
+        <button id="btn-jana" class="btn-action btn-jana" onclick="janaSoalanBaharuMasaSebenar()">⚡ Jana Soalan Baharu</button>
+      </div>
+    </div>
+
+    <div id="view-result" class="view">
+      <div class="result-card">
+        <div id="result-icon" style="font-size: 4rem;">🎉</div>
+        <h2 id="result-title">Tahniah!</h2>
+        <p id="result-subtitle">Selesai latihan set ini.</p>
+        <div id="result-score" class="result-score">0 / 100</div>
+        <div id="result-badge" class="badge-status badge-pass">Lulus</div>
+        <p id="result-message" style="color: #4A5568; font-size: 0.95rem;"></p>
+
+        <button id="btn-next-set" class="btn-modal" onclick="nextSetAction()">Seterusnya ➔</button>
+        <button class="btn-modal" style="background:#718096; margin-top:10px;" onclick="goHome()">Kembali ke Muka Depan</button>
+      </div>
+    </div>
+
+    <div id="feedback-modal" class="modal-overlay">
+      <div id="modal-content" class="modal-card">
+        <div id="modal-icon" class="modal-icon">👏</div>
+        <h3 id="modal-title" style="margin:0 0 10px 0;">Syabas!</h3>
+        <p id="modal-desc" style="margin:0; color:#4A5568; font-size:0.95rem;">Jawapan anda betul.</p>
+        <button id="modal-btn" class="btn-modal" onclick="closeModal()">Teruskan</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questionBank = [
+      {
+        setName: "Set 1: Kata Nama",
+        questions: [
+          { q: "Abang membeli sebuah __________ baharu di kedai itu.", options: ["kereta", "Proton Saga", "Si Comel", "Sekolah"], answer: 0 },
+          { q: "Anjing kesayangan Kim Seng dinamakan __________.", options: ["Si Hitam", "kereta", "sungai", "sekolah"], answer: 0 },
+          { q: "Ibu memasak hidangan untuk keluarga di __________.", options: ["dapur", "Hospital", "Sang Kancil", "Melaka"], answer: 0 },
+          { q: "Kami melawat muzium di negeri __________ pada cuti sekolah.", options: ["Melaka", "bandar", "sungai", "kedai"], answer: 0 },
+          { q: "Murid-murid sedang belajar di dalam __________.", options: ["bilik darjah", "Pekan", "Proton", "Sang Buaya"], answer: 0 },
+          { q: "Doktor Azman bertugas sebagai doktor di __________.", options: ["Hospital Kuala Lumpur", "rumah", "kedai", "taman"], answer: 0 },
+          { q: "Kakak suka membaca __________ di perpustakaan.", options: ["buku", "Jepun", "Pak Cik Lim", "Pulau Pinang"], answer: 0 },
+          { q: "Kucing comel itu diberi nama __________.", options: ["Si Tompok", "padang", "sekolah", "kasut"], answer: 0 },
+          { q: "Ayah memandu __________ ke pejabat setiap pagi.", options: ["motosikal", "Sang Kancil", "Sarawak", "Tahun 3"], answer: 0 },
+          { q: "Negara __________ terkenal dengan keindahan kawasannya.", options: ["Malaysia", "bandar", "kampung", "sekolah"], answer: 0 }
+        ]
+      },
+      {
+        setName: "Set 2: Kata Ganti Nama",
+        questions: [
+          { q: "“__________ hendak ke perpustakaan sekarang,” kata Amir kepada Ali.", options: ["Saya", "Beliau", "Baginda", "Mereka"], answer: 0 },
+          { q: "Sultan Ahmad sangat adil. __________ dikasihi oleh rakyat.", options: ["Baginda", "Kamu", "Saya", "Aku"], answer: 0 },
+          { q: "Guru Besar menyampaikan ucapan. __________ menasihati murid agar rajin belajar.", options: ["Beliau", "Mereka", "Aku", "Kamu"], answer: 0 },
+          { q: "“Apakah yang sedang __________ lakukan di sini?” tanya Cikgu Wong kepada murid-murid.", options: ["kamu", "baginda", "beliau", "saya"], answer: 0 },
+          { q: "Murid-murid Tahun 3 Melati sangat rajin. __________ membersihkan kelas bersama-sama.", options: ["Mereka", "Saya", "Dia", "Baginda"], answer: 0 },
+          { q: "“__________ berjanji akan belajar bersungguh-sungguh,” kata kami kepada guru.", options: ["Kami", "Dia", "Beliau", "Baginda"], answer: 0 },
+          { q: "Ibu menasihati adik supaya menjaga kebersihan. __________ menyayangi adik.", options: ["Beliau", "Aku", "Baginda", "Kamu"], answer: 0 },
+          { q: "“Bolehkah __________ bantu mak cik membawa beg ini?” tanya Imran.", options: ["saya", "baginda", "mereka", "dia"], answer: 0 },
+          { q: "Raja Negeri itu amat bijaksana. __________ memerintah dengan adil.", options: ["Baginda", "Saya", "Kita", "Kamu"], answer: 0 },
+          { q: "“__________ perlu bersatu padu menjaga keselamatan kampung,” kata ketua kampung.", options: ["Kita", "Aku", "Beliau", "Baginda"], answer: 0 }
+        ]
+      },
+      {
+        setName: "Set 3: Kata Kerja",
+        questions: [
+          { q: "Mak Cik Aminah __________ baju yang kotor di dalam bilik air.", options: ["mencuci", "membaca", "menulis", "memasak"], answer: 0 },
+          { q: "Ayah __________ pokok bunga di halaman rumah.", options: ["menyiram", "memakan", "mendengar", "menyapu"], answer: 0 },
+          { q: "Murid-murid sedang __________ lagu kebangsaan semasa perhimpunan.", options: ["menyanyikan", "menari", "melompat", "memasak"], answer: 0 },
+          { q: "Pemain bola sepak itu __________ bola dengan kencang ke arah gol.", options: ["menendang", "memotong", "menjahit", "membakar"], answer: 0 },
+          { q: "Ibu __________ sayur-sayuran yang dibeli di pasar.", options: ["memotong", "terbang", "melihat", "berlari"], answer: 0 },
+          { q: "Adik __________ susu sebelum tidur.", options: ["meminum", "memakai", "menulis", "membuka"], answer: 0 },
+          { q: "Burung helang itu __________ tinggi di udara.", options: ["terbang", "berjalan", "berenang", "merangkak"], answer: 0 },
+          { q: "Cikgu Lee __________ pelajaran Matematik di hadapan kelas.", options: ["mengajar", "membeli", "menidurkan", "mencuci"], answer: 0 },
+          { q: "Kakak sedang __________ surat untuk sahabat karabnya.", options: ["menulis", "memakan", "memandu", "memanjat"], answer: 0 },
+          { q: "Monyet itu __________ pokok kelapa dengan pantas.", options: ["memanjat", "menyelam", "menjual", "membakar"], answer: 0 }
+        ]
+      },
+      {
+        setName: "Set 4: Kata Adjektif",
+        questions: [
+          { q: "Rumah baharu yang dibina oleh ayah sangat __________.", options: ["besar", "manis", "panjang", "wangi"], answer: 0 },
+          { q: "Buah mangga yang masak itu rasanya amat __________.", options: ["manis", "pahit", "masin", "tajam"], answer: 0 },
+          { q: "Pisau yang __________ itu perlu disimpan di tempat selamat.", options: ["tajam", "tumpul", "bujur", "wangi"], answer: 0 },
+          { q: "Bunga mawar di taman itu sangat __________ baunya.", options: ["wangi", "pahit", "bising", "bujur"], answer: 0 },
+          { q: "Budak yang __________ itu sentiasa mendapat keputusan cemerlang.", options: ["bijak", "pemalas", "lambat", "kotor"], answer: 0 },
+          { q: "Sungai di belakang rumah saya sangat __________ dan jernih.", options: ["bersih", "kotor", "pahit", "kasar"], answer: 0 },
+          { q: "Jalan raya menuju ke kampung itu amat __________.", options: ["bengkang-bengkok", "manis", "bujur", "wangi"], answer: 0 },
+          { q: "Adik tidak suka makan ubat kerana rasanya __________.", options: ["pahit", "manis", "harum", "lurus"], answer: 0 },
+          { q: "Pemerintah itu dipuji kerana mempunyai sikap yang __________.", options: ["jujur", "pemalas", "bising", "tajam"], answer: 0 },
+          { q: "Pakaian yang dipakai oleh abang amat __________ dan kemas.", options: ["bersih", "masin", "pahit", "bujur"], answer: 0 }
+        ]
+      },
+      {
+        setName: "Set 5: Penjodoh Bilangan",
+        questions: [
+          { q: "Ayah membeli tiga __________ pisang di pasar pagi.", options: ["sisir", "biji", "batang", "keping"], answer: 0 },
+          { q: "Ibu menggunakan dua __________ telur untuk membuat kek.", options: ["biji", "helai", "pucuk", "larik"], answer: 0 },
+          { q: "Abang menghadiahkan sejambak bunga dan se__________ cincin.", options: ["bentuk", "ekor", "keping", "kaki"], answer: 0 },
+          { q: "Kakak membeli se__________ baju kurung baharu.", options: ["helai", "buah", "batang", "biji"], answer: 0 },
+          { q: "Polis menemukan se__________ pistol di lokasi kejadian.", options: ["pucuk", "ekor", "helai", "keping"], answer: 0 },
+          { q: "Di tepi rumah terdapat dua __________ pokok kelapa.", options: ["batang", "biji", "keping", "bentuk"], answer: 0 },
+          { q: "Adik memelihara tiga __________ kucing yang comel.", options: ["ekor", "buah", "batang", "pucuk"], answer: 0 },
+          { q: "Mak Cik Siti memotong se__________ roti untuk sarapan.", options: ["keping", "ekor", "bentuk", "pucuk"], answer: 0 },
+          { q: "Pemuda itu membawa se__________ payung semasa hujan.", options: ["kaki", "biji", "batang", "helai"], answer: 0 },
+          { q: "Kami membawa dua __________ khemah semasa berkhemah.", options: ["buah", "ekor", "pucuk", "bentuk"], answer: 0 }
+        ]
+      },
+      {
+        setName: "Set 6: Kata Hubung & Sendi",
+        questions: [
+          { q: "Ali __________ Ahmad berjalan kaki ke sekolah bersama-sama.", options: ["dan", "tetapi", "kerana", "sambil"], answer: 0 },
+          { q: "Budak itu menangis __________ lututnya terluka.", options: ["kerana", "atau", "sambil", "dan"], answer: 0 },
+          { q: "Kamu boleh memilih untuk minum teh __________ kopi.", options: ["atau", "kerana", "lalu", "tetapi"], answer: 0 },
+          { q: "Ibu membasuh pinggan __________ menyanyi dengan gembira.", options: ["sambil", "kerana", "atau", "supaya"], answer: 0 },
+          { q: "Budak itu gemuk __________ berjalan sangat pantas.", options: ["tetapi", "dan", "kerana", "sambil"], answer: 0 },
+          { q: "Suki menyapu sampah __________ kakaknya membuang sampah.", options: ["manakala", "kerana", "supaya", "atau"], answer: 0 },
+          { q: "Kami belajar rajin-rajin __________ mendapat keputusan cemerlang.", options: ["supaya", "tetapi", "atau", "sambil"], answer: 0 },
+          { q: "Ayah bertolak __________ Pulau Pinang pada pagi tadi.", options: ["ke", "dari", "daripada", "pada"], answer: 0 },
+          { q: "Hadiah ini adalah __________ ibu sempena Hari Ibu.", options: ["untuk", "daripada", "pada", "ke"], answer: 0 },
+          { q: "Surat itu diterima __________ pihak sekolah semalam.", options: ["daripada", "ke", "di", "pada"], answer: 0 }
+        ]
+      },
+      {
+        setName: "Set 7: Simpulan Bahasa",
+        questions: [
+          { q: "Swee Lan seorang yang __________ kerana suka membantu orang lain.", options: ["baik hati", "berat tulang", "tajam akal", "kaki ayam"], answer: 0 },
+          { q: "Budak yang __________ itu disukai oleh guru-gurunya.", options: ["otak cerdas", "ringan mulut", "kaki bangku", "ulat buku"], answer: 0 },
+          { q: "Anand dipanggil __________ kerana tidak pandai bermain bola.", options: ["kaki bangku", "kaki ayam", "murah hati", "anak angkat"], answer: 0 },
+          { q: "Cikgu Mei suka mengajar murid yang __________ kerana cepat faham.", options: ["tajam akal", "berat tulang", "kaki ayam", "panjang tangan"], answer: 0 },
+          { q: "Siva berasa __________ apabila dipuji oleh gurunya.", options: ["besar hati", "kecil hati", "berat tulang", "otak udang"], answer: 0 },
+          { q: "Kita janganlah menjadi __________ yang tidak suka bekerja.", options: ["berat tulang", "ringan tulang", "baik hati", "otak cerdas"], answer: 0 },
+          { q: "Farid seorang __________ kerana meminjam banyak buku dari perpustakaan.", options: ["ulat buku", "kaki ayam", "kaki bangku", "tangan terbuka"], answer: 0 },
+          { q: "Jangan suka menjadi __________ dengan mengambil barang orang lain.", options: ["panjang tangan", "baik hati", "ringan mulut", "murah hati"], answer: 0 },
+          { q: "Siti tidak memakai kasut semasa bermain, dia berjalan __________.", options: ["kaki ayam", "kaki bangku", "berat tulang", "besar hati"], answer: 0 },
+          { q: "Encik Ramli seorang yang __________ kerana suka memberi derma.", options: ["murah hati", "panjang tangan", "berat tulang", "kecil hati"], answer: 0 }
+        ]
+      },
+      {
+        setName: "Set 8: Imbuhan",
+        questions: [
+          { q: "Ibu sedang __________ nasi di dapur.", options: ["memasak", "pemasak", "masakan", "termasak"], answer: 0 },
+          { q: "Murid-murid sedang __________ soalan latihan.", options: ["menjawab", "jawapan", "terjawab", "penjawab"], answer: 0 },
+          { q: "Kasut yang __________ oleh abang amat bersih.", options: ["dipakai", "pemakai", "pakaian", "terpakai"], answer: 0 },
+          { q: "Penari itu __________ dengan sungguh lemah lembut.", options: ["menari", "penari", "tarian", "ditari"], answer: 0 },
+          { q: "Kita mestilah __________ orang yang lebih tua.", options: ["menghormati", "terhormat", "penghormat", "dihormati"], answer: 0 },
+          { q: "Kereta baharu itu __________ oleh ayah semalam.", options: ["dibeli", "pembeli", "belian", "terbeli"], answer: 0 },
+          { q: "__________ itu menyampaikan ucapan dengan bersemangat.", options: ["Penceramah", "Berceramah", "Ceramahan", "Diceramah"], answer: 0 },
+          { q: "Adik __________ apabila melihat pertunjukan silap mata.", options: ["tertawa", "ditawa", "penawa", "pembawa"], answer: 0 },
+          { q: "Gagah sungguh __________ pasukan negara itu.", options: ["pemain", "memain", "mainan", "dimain"], answer: 0 },
+          { q: "Roti yang __________ oleh mak cik sangat sedap.", options: ["dibakar", "pembakar", "terbakar", "bakaran"], answer: 0 }
+        ]
+      },
+      {
+        setName: "Set 9: Tanda Baca & Ejaan",
+        questions: [
+          { q: "Pilih ayat dengan tanda baca yang betul.", options: ["Wah, cantiknya pemandangan ini!", "wah cantiknya pemandangan ini", "Wah cantiknya pemandangan ini?", "Wah, cantiknya pemandangan ini."], answer: 0 },
+          { q: "Pilih ayat dengan tanda baca yang betul.", options: ["Siapakah nama guru kelas kamu?", "Siapakah nama guru kelas kamu.", "siapakah nama guru kelas kamu!", "Siapakah, nama guru kelas kamu."], answer: 0 },
+          { q: "Pilih ejaan yang betul mengikut DBP.", options: ["pelihara", "peliharaa", "peliara", "peliharae"], answer: 0 },
+          { q: "Pilih ejaan kata majmuk yang betul.", options: ["antarabangsa", "antara bangsa", "anta rabangsa", "antrabangsa"], answer: 0 },
+          { q: "Pilih ayat penyata yang betul.", options: ["Ahmad membaca buku di bilik.", "Ahmad membaca buku di bilik?", "Wah, Ahmad membaca buku!", "Adakah Ahmad membaca buku."], answer: 0 },
+          { q: "Pilih ejaan yang betul mengikut DBP.", options: ["stesen", "stesyen", "stasion", "setesen"], answer: 0 },
+          { q: "Pilih ejaan yang betul mengikut DBP.", options: ["mewarna", "me-warna", "memwarna", "mewarnai"], answer: 0 },
+          { q: "Manakah penggunaan huruf besar yang betul?", options: ["Saya tinggal di Negeri Perak.", "Saya tinggal di negeri perak.", "saya tinggal di Negeri perak.", "Saya tinggal di Negeri Perak?"], answer: 0 },
+          { q: "Pilih ejaan yang betul mengikut DBP.", options: ["menceriakan", "mencheriakan", "mencerikan", "menceriakann"], answer: 0 },
+          { q: "Pilih ayat seruan yang betul.", options: ["Amboi, mahalnya baju ini!", "Amboi mahalnya baju ini.", "Amboi, mahalnya baju ini?", "Amboi mahalnya baju ini"], answer: 0 }
+        ]
+      },
+      {
+        setName: "Set 10: Penilaian Akhir",
+        questions: [
+          { q: "Encik Kamal memandu __________ baharunya dengan berhati-hati.", options: ["kereta", "rumah", "baju", "kasut"], answer: 0 },
+          { q: "“__________ akan belajar rajin-rajin,” kata murid-murid kepada cikgu.", options: ["Kami", "Saya", "Beliau", "Baginda"], answer: 0 },
+          { q: "Ibu menggunakan se__________ pisau untuk memotong buah.", options: ["bilah", "biji", "pucuk", "ekor"], answer: 0 },
+          { q: "Pemandangan di puncak gunung itu amat __________.", options: ["indah", "pahit", "masin", "bising"], answer: 0 },
+          { q: "Kumaran suka membaca buku. Dia digelar __________.", options: ["ulat buku", "kaki bangku", "kaki ayam", "berat tulang"], answer: 0 },
+          { q: "Gopal tidak pergi ke sekolah __________ dia demam.", options: ["kerana", "tetapi", "sambil", "atau"], answer: 0 },
+          { q: "Cikgu Azli __________ Matematik di Sekolah Rendah Murni.", options: ["mengajar", "belajar", "pengajar", "terajar"], answer: 0 },
+          { q: "Pilih ayat yang mempunyai tanda baca yang betul.", options: ["Syabas, kamu telah berjaya!", "syabas kamu telah berjaya", "Syabas kamu telah berjaya?", "Syabas, kamu telah berjaya."], answer: 0 },
+          { q: "Tunku Abdul Rahman ialah __________ Malaysia yang pertama.", options: ["Perdana Menteri", "perdana menteri", "PERDANA MENTERI", "Perdana menteri"], answer: 0 },
+          { q: "Semua murid berasa amat __________ kerana menang dalam pertandingan itu.", options: ["gembira", "sedih", "marah", "takut"], answer: 0 }
+        ]
+      }
+    ];
+
+    // BANK DATA UNTUK JANA SOALAN DINAMIK SECARA MASA SEBENAR (REAL-TIME GENERATOR)
+    const dynamicGenerators = [
+      // Set 1: Kata Nama
+      function() {
+        const subjects = ["Ahmad", "Siti", "Cikgu Mei", "Kavita", "Zul", "Abang", "Kakak", "Ayah"];
+        const nouns = ["basikal", "beg", "jam tangan", "kamus", "topi", "kasut", "tuala", "pensel"];
+        const places = ["kedai", "pasar raya", "sekolah", "pejabat", "taman"];
+        const distractors = ["Proton Saga", "Sang Kancil", "Melaka", "Malaysia", "Si Comel", "Hospital"];
+        const sub = subjects[Math.floor(Math.random() * subjects.length)];
+        const noun = nouns[Math.floor(Math.random() * nouns.length)];
+        const place = places[Math.floor(Math.random() * places.length)];
+        return {
+          q: `${sub} membeli sebuah __________ baharu di ${place}.`,
+          options: [noun, distractors[0], distractors[1], distractors[2]],
+          answer: 0
+        };
+      },
+      // Set 2: Kata Ganti Nama
+      function() {
+        const templates = [
+          { q: "“__________ berjanji akan belajar bersungguh-sungguh,” kata murid-murid kepada guru.", correct: "Kami", wrong: ["Dia", "Beliau", "Baginda"] },
+          { q: "Guru Besar baharu itu sangat baik. __________ sentiasa mesra dengan murid.", correct: "Beliau", wrong: ["Baginda", "Saya", "Aku"] },
+          { q: "Sultan Kedah amat prihatin. __________ menyumbang bantuan kepada rakyat.", correct: "Baginda", wrong: ["Saya", "Kamu", "Beliau"] },
+          { q: "“__________ hendak pergi ke kantin sekarang,” kata Ali kepada Chong.", correct: "Saya", wrong: ["Baginda", "Beliau", "Mereka"] }
+        ];
+        const t = templates[Math.floor(Math.random() * templates.length)];
+        return { q: t.q, options: [t.correct, ...t.wrong], answer: 0 };
+      },
+      // Set 3: Kata Kerja
+      function() {
+        const templates = [
+          { q: "Ibu sedang __________ kek yang sedap di dapur.", correct: "membakar", wrong: ["membaca", "menulis", "terbang"] },
+          { q: "Adik suka __________ gambar pemandangan pada waktu lapang.", correct: "melukis", wrong: ["meminum", "memotong", "menjahit"] },
+          { q: "Kumpulan murid itu sedang __________ kawasan sekolah.", correct: "membersihkan", wrong: ["memanjat", "terbang", "menendang"] },
+          { q: "Abang __________ basikal baharunya di sekeliling taman.", correct: "menunggang", wrong: ["memasak", "menjahit", "membuka"] }
+        ];
+        const t = templates[Math.floor(Math.random() * templates.length)];
+        return { q: t.q, options: [t.correct, ...t.wrong], answer: 0 };
+      },
+      // Set 4: Kata Adjektif
+      function() {
+        const templates = [
+          { q: "Pokok kelapa di belakang rumah nenek sangat __________.", correct: "tinggi", wrong: ["pahit", "masin", "bujur"] },
+          { q: "Pemandangan pada waktu matahari terbit amat __________.", options: ["indah", "pahit", "kasar", "bising"], answer: 0 },
+          { q: "Air sungai itu sangat __________ kerana tiada sampah sarap.", correct: "jernih", wrong: ["pahit", "buka", "bujur"] },
+          { q: "Kain sutera yang dibeli oleh ibu berasa amat __________.", correct: "halus", wrong: ["pahit", "bising", "tajam"] }
+        ];
+        const t = templates[Math.floor(Math.random() * templates.length)];
+        return { q: t.q, options: t.options || [t.correct, ...t.wrong], answer: 0 };
+      },
+      // Set 5: Penjodoh Bilangan
+      function() {
+        const templates = [
+          { q: "Kakak membeli dua __________ baju dari kedai itu.", correct: "helai", wrong: ["biji", "batang", "pucuk"] },
+          { q: "Bapa memotong se__________ kayu menggunakan kapak.", correct: "batang", wrong: ["helai", "bentuk", "pucuk"] },
+          { q: "Pengantin itu memakai se__________ cincin emas.", correct: "bentuk", wrong: ["ekor", "keping", "kaki"] },
+          { q: "Adik memakan tiga __________ biskut coklat.", correct: "keping", wrong: ["batang", "pucuk", "ekor"] }
+        ];
+        const t = templates[Math.floor(Math.random() * templates.length)];
+        return { q: t.q, options: [t.correct, ...t.wrong], answer: 0 };
+      },
+      // Set 6: Kata Hubung & Sendi
+      function() {
+        const templates = [
+          { q: "Devi membaca buku __________ adiknya mewarna gambar.", correct: "manakala", wrong: ["kerana", "supaya", "atau"] },
+          { q: "Siti rajin membaca buku __________ ingin berjaya.", correct: "kerana", wrong: ["atau", "sambil", "dan"] },
+          { q: "Ayah menghantar adiknya __________ sekolah pada setiap pagi.", correct: "ke", wrong: ["dari", "daripada", "pada"] },
+          { q: "Surat itu dikirim __________ rakan penanya dari Jepun.", correct: "daripada", wrong: ["ke", "di", "pada"] }
+        ];
+        const t = templates[Math.floor(Math.random() * templates.length)];
+        return { q: t.q, options: [t.correct, ...t.wrong], answer: 0 };
+      },
+      // Set 7: Simpulan Bahasa
+      function() {
+        const templates = [
+          { q: "Amir seorang yang __________ kerana mudah memahami pelajaran.", correct: "otak cerdas", wrong: ["berat tulang", "kaki bangku", "kaki ayam"] },
+          { q: "Mak Cik Minah dipuji kerana __________ dan ramah dengan jiran.", correct: "ringan mulut", wrong: ["berat tulang", "otak udang", "panjang tangan"] },
+          { q: "Pekerja yang __________ itu tidak disukai oleh majikannya.", correct: "berat tulang", wrong: ["baik hati", "ringan tulang", "otak cerdas"] },
+          { q: "Ahmad disambut dengan __________ apabila pulang ke kampung.", correct: "tangan terbuka", wrong: ["kaki ayam", "berat tulang", "kaki bangku"] }
+        ];
+        const t = templates[Math.floor(Math.random() * templates.length)];
+        return { q: t.q, options: [t.correct, ...t.wrong], answer: 0 };
+      },
+      // Set 8: Imbuhan
+      function() {
+        const templates = [
+          { q: "Bangunan yang __________ oleh syarikat itu amat megah.", correct: "dibina", wrong: ["pembina", "binaan", "terbina"] },
+          { q: "__________ itu melukis pemandangan yang amat indah.", correct: "Pelukis", wrong: ["Melukis", "Lukisan", "Dilukis"] },
+          { q: "Murid-murid gembira __________ acara sukan.", correct: "menyertai", wrong: ["penyerta", "ditertai", "sertaan"] },
+          { q: "Lagu yang __________ oleh penyanyi itu amat merdu.", correct: " dinyanyikan", wrong: ["penyanyi", "nyanyian", "ternyanyi"] }
+        ];
+        const t = templates[Math.floor(Math.random() * templates.length)];
+        return { q: t.q, options: [t.correct, ...t.wrong], answer: 0 };
+      },
+      // Set 9: Tanda Baca & Ejaan
+      function() {
+        const templates = [
+          { q: "Pilih ejaan kata yang betul mengikut DBP.", correct: "kereta api", wrong: ["keretaapi", "kereta-api", "keretapi"] },
+          { q: "Pilih ayat dengan tanda baca yang betul.", correct: "Aduh, sakitnya kakiku!", wrong: ["aduh sakitnya kakiku", "Aduh sakitnya kakiku?", "Aduh, sakitnya kakiku."] },
+          { q: "Pilih ejaan yang betul mengikut DBP.", correct: "tanggungjawab", wrong: ["tanggung jawab", "tanggung-jawab", "tangungjawab"] },
+          { q: "Pilih ayat tanya yang betul.", correct: "Di manakah rumah kamu?", wrong: ["Di manakah rumah kamu.", "di manakah rumah kamu!", "Di manakah, rumah kamu."] }
+        ];
+        const t = templates[Math.floor(Math.random() * templates.length)];
+        return { q: t.q, options: [t.correct, ...t.wrong], answer: 0 };
+      },
+      // Set 10: Penilaian Akhir
+      function() {
+        const randomSet = Math.floor(Math.random() * 9);
+        return dynamicGenerators[randomSet]();
+      }
+    ];
+
+    const pujianBM = [
+      "Pandainya kamu! Jawapan ini tepat.",
+      "Bijak sekali! Jawapan kamu betul.",
+      "Terbaik! Teruskan usaha kamu.",
+      "Syabas! Kamu dapat markah.",
+      "Bagus! Jawapan kamu sangat tepat."
+    ];
+
+    const optionPrefixes = ['A', 'B', 'C', 'D'];
+
+    let currentSetIndex = 0;
+    let currentQuestionIndex = 0;
+    let currentScore = 0;
+    let unlockedSets = 1;
+    let scoresHistory = Array(10).fill(0);
+
+    let selectedOptionIndex = null;
+    let isQuestionChecked = false;
+    let isLastAnswerCorrect = false;
+    let currentAudioObj = null;
+
+    // FUNGSI MERAWAKAN PILIHAN JAWAPAN (RANDOMIZATION)
+    function rawakPilihanJawapan(qData) {
+      const gabungan = qData.options.map((opt, idx) => ({
+        text: opt,
+        isCorrect: idx === qData.answer
+      }));
+
+      for (let i = gabungan.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [gabungan[i], gabungan[j]] = [gabungan[j], gabungan[i]];
+      }
+
+      qData.shuffledOptions = gabungan.map(item => item.text);
+      qData.shuffledAnswer = gabungan.findIndex(item => item.isCorrect);
+    }
+
+    // CARI SUARA PEREMPUAN MELAYU MALAYSIA (ms-MY)
+    function dapatkanSuaraPerempuanMelayu() {
+      if (!('speechSynthesis' in window)) return null;
+
+      const voices = window.speechSynthesis.getVoices();
+
+      let suaraPerempuan = voices.find(v => {
+        const lang = v.lang.replace('_', '-').toLowerCase();
+        const name = v.name.toLowerCase();
+
+        const isMalay = lang === 'ms-my' || lang === 'ms';
+        const isEnglish = lang.startsWith('en') || name.includes('english');
+        const isIndonesian = lang.startsWith('id') || name.includes('indonesia');
+
+        if (!isMalay || isEnglish || isIndonesian) return false;
+
+        return name.includes('yasmin') || name.includes('female') || name.includes('perempuan') || name.includes('google');
+      });
+
+      if (!suaraPerempuan) {
+        suaraPerempuan = voices.find(v => {
+          const lang = v.lang.replace('_', '-').toLowerCase();
+          const name = v.name.toLowerCase();
+          return (lang === 'ms-my' || lang === 'ms') && !lang.startsWith('en') && !name.includes('english');
+        });
+      }
+
+      return suaraPerempuan;
+    }
+
+    // FUNGSI UTAMA SEBUTAN
+    function speakBM(teks) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      if (currentAudioObj) {
+        currentAudioObj.pause();
+      }
+
+      let teksDibersihkan = teks.replace(/_+/g, 'tempat kosong');
+      const suaraPerempuan = dapatkanSuaraPerempuanMelayu();
+
+      if (suaraPerempuan) {
+        const utterance = new SpeechSynthesisUtterance(teksDibersihkan);
+        utterance.voice = suaraPerempuan;
+        utterance.lang = 'ms-MY';
+        utterance.rate = 0.85;
+        utterance.pitch = 1.15;
+        window.speechSynthesis.speak(utterance);
+      } else {
+        const encodedText = encodeURIComponent(teksDibersihkan);
+        const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=ms&client=tw-ob`;
+        
+        currentAudioObj = new Audio(audioUrl);
+        currentAudioObj.playbackRate = 0.9;
+        currentAudioObj.play().catch(e => {
+          console.warn("Audio automatik dihalang oleh pelayar.", e);
+        });
+      }
+    }
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        dapatkanSuaraPerempuanMelayu();
+      };
+    }
+
+    function loadProgress() {
+      const savedUnlocked = localStorage.getItem('bm_t3_unlocked_female_msmy');
+      const savedScores = localStorage.getItem('bm_t3_scores_female_msmy');
+      if (savedUnlocked) unlockedSets = parseInt(savedUnlocked, 10);
+      if (savedScores) scoresHistory = JSON.parse(savedScores);
+    }
+
+    function saveProgress() {
+      localStorage.setItem('bm_t3_unlocked_female_msmy', unlockedSets);
+      localStorage.setItem('bm_t3_scores_female_msmy', JSON.stringify(scoresHistory));
+    }
+
+    function initApp() {
+      loadProgress();
+      renderMenu();
+    }
+
+    function renderMenu() {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      if (currentAudioObj) currentAudioObj.pause();
+      
+      showView('view-menu');
+      const grid = document.getElementById('sets-grid');
+      grid.innerHTML = '';
+
+      questionBank.forEach((set, idx) => {
+        const isUnlocked = idx < unlockedSets;
+        const card = document.createElement('div');
+        card.className = `card-set ${isUnlocked ? 'unlocked' : 'locked'}`;
+
+        const score = scoresHistory[idx];
+        const statusText = isUnlocked 
+          ? (score > 0 ? `Markah: ${score}` : 'Belum Buat') 
+          : 'Terkunci 🔒';
+
+        card.innerHTML = `
+          <div class="icon">${isUnlocked ? '📝' : '🔒'}</div>
+          <div class="title">${set.setName}</div>
+          <div class="score-badge">${statusText}</div>
+        `;
+
+        if (isUnlocked) {
+          card.onclick = () => startSet(idx);
+        }
+
+        grid.appendChild(card);
+      });
+    }
+
+    function showView(viewId) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById(viewId).classList.add('active');
+    }
+
+    function startSet(setIndex) {
+      currentSetIndex = setIndex;
+      currentQuestionIndex = 0;
+      currentScore = 0;
+
+      questionBank[currentSetIndex].questions.forEach(q => {
+        rawakPilihanJawapan(q);
+      });
+
+      showView('view-quiz');
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      selectedOptionIndex = null;
+      isQuestionChecked = false;
+
+      const setData = questionBank[currentSetIndex];
+      const qData = setData.questions[currentQuestionIndex];
+
+      if (!qData.shuffledOptions) {
+        rawakPilihanJawapan(qData);
+      }
+
+      document.getElementById('quiz-set-title').innerText = setData.setName;
+      document.getElementById('quiz-step-text').innerText = `Soalan ${currentQuestionIndex + 1}/10`;
+      
+      const progressPercent = ((currentQuestionIndex) / 10) * 100;
+      document.getElementById('progress-bar-fill').style.width = `${progressPercent}%`;
+
+      document.getElementById('question-text').innerText = `${currentQuestionIndex + 1}. ${qData.q}`;
+
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+
+      qData.shuffledOptions.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-option';
+        const labelText = `${optionPrefixes[idx]}. ${opt}`;
+        btn.innerText = labelText;
+        btn.onclick = () => selectOption(idx, btn, labelText);
+        optionsContainer.appendChild(btn);
+      });
+
+      const btnSemak = document.getElementById('btn-semak');
+      const btnNext = document.getElementById('btn-next');
+      btnSemak.style.display = 'block';
+      btnNext.style.display = 'none';
+
+      ulangBacaSoalan();
+    }
+
+    // FUNGSI JANA SOALAN BAHARU SECARA MASA SEBENAR (REAL-TIME DYNAMIC GENERATION)
+    function janaSoalanBaharuMasaSebenar() {
+      const generator = dynamicGenerators[currentSetIndex];
+      if (generator) {
+        const dynamicQ = generator();
+        rawakPilihanJawapan(dynamicQ);
+        questionBank[currentSetIndex].questions[currentQuestionIndex] = dynamicQ;
+        loadQuestion();
+        speakBM("Soalan baharu telah dijana.");
+      }
+    }
+
+    function ulangBacaSoalan() {
+      const setData = questionBank[currentSetIndex];
+      const qData = setData.questions[currentQuestionIndex];
+      speakBM(`Soalan nombor ${currentQuestionIndex + 1}. ${qData.q}`);
+    }
+
+    function selectOption(index, btnElement, optionText) {
+      if (isQuestionChecked) return;
+
+      selectedOptionIndex = index;
+      const allButtons = document.querySelectorAll('.btn-option');
+      allButtons.forEach(b => b.classList.remove('selected'));
+      btnElement.classList.add('selected');
+
+      speakBM(optionText);
+    }
+
+    function semakJawapan() {
+      if (selectedOptionIndex === null) {
+        speakBM("Sila pilih satu jawapan dahulu.");
+        alert("Sila pilih satu jawapan dahulu.");
+        return;
+      }
+
+      isQuestionChecked = true;
+      const setData = questionBank[currentSetIndex];
+      const qData = setData.questions[currentQuestionIndex];
+      const allButtons = document.querySelectorAll('.btn-option');
+
+      const btnSemak = document.getElementById('btn-semak');
+      const btnNext = document.getElementById('btn-next');
+
+      btnSemak.style.display = 'none';
+      btnNext.style.display = 'block';
+
+      if (selectedOptionIndex === qData.shuffledAnswer) {
+        isLastAnswerCorrect = true;
+        allButtons[selectedOptionIndex].classList.add('correct');
+        currentScore += 10;
+
+        const randomCompliment = pujianBM[Math.floor(Math.random() * pujianBM.length)];
+        
+        btnNext.className = "btn-action btn-next";
+        btnNext.innerText = "Seterusnya ➔";
+
+        speakBM(randomCompliment);
+        showModal(true, '🎉 Syabas!', randomCompliment, 'Teruskan ➔');
+      } else {
+        isLastAnswerCorrect = false;
+        allButtons[selectedOptionIndex].classList.add('wrong');
+        allButtons[qData.shuffledAnswer].classList.add('correct');
+
+        btnNext.className = "btn-action btn-retry-action";
+        btnNext.innerText = "Ulang Soalan 🔄";
+
+        speakBM("Jawapan kamu kurang tepat. Sila cuba lagi.");
+        showModal(false, '❌ Salah', 'Jawapan kurang tepat. Cuba lagi ya!', 'Ulang Soalan 🔄');
+      }
+    }
+
+    function keSoalanSeterusnya() {
+      if (isLastAnswerCorrect) {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < 10) {
+          loadQuestion();
+        } else {
+          finishSet();
+        }
+      } else {
+        loadQuestion();
+      }
+    }
+
+    function showModal(isCorrect, title, desc, btnText) {
+      setTimeout(() => {
+        const modal = document.getElementById('feedback-modal');
+        const modalContent = document.getElementById('modal-content');
+        
+        modalContent.className = `modal-card ${isCorrect ? 'correct-modal' : 'wrong-modal'}`;
+        document.getElementById('modal-icon').innerText = isCorrect ? '🌟' : '💡';
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('modal-desc').innerText = desc;
+        document.getElementById('modal-btn').innerText = btnText;
+
+        modal.style.display = 'flex';
+      }, 300);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('feedback-modal');
+      modal.style.display = 'none';
+
+      if (isLastAnswerCorrect) {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < 10) {
+          loadQuestion();
+        } else {
+          finishSet();
+        }
+      } else {
+        loadQuestion();
+      }
+    }
+
+    function finishSet() {
+      if (currentScore > scoresHistory[currentSetIndex]) {
+        scoresHistory[currentSetIndex] = currentScore;
+      }
+
+      const passed = currentScore >= 50;
+      if (passed && currentSetIndex + 1 >= unlockedSets && unlockedSets < 10) {
+        unlockedSets = currentSetIndex + 2;
+      }
+
+      saveProgress();
+
+      showView('view-result');
+      document.getElementById('result-score').innerText = `${currentScore} / 100`;
+
+      const badge = document.getElementById('result-badge');
+      const nextBtn = document.getElementById('btn-next-set');
+
+      if (passed) {
+        document.getElementById('result-icon').innerText = '🏆';
+        document.getElementById('result-title').innerText = 'Tahniah!';
+        document.getElementById('result-subtitle').innerText = 'Kamu berjaya lulus set latihan ini!';
+        badge.className = 'badge-status badge-pass';
+        badge.innerText = 'LULUS';
+        document.getElementById('result-message').innerText = currentSetIndex < 9 
+          ? 'Set latihan seterusnya telah dibuka!' 
+          : 'Hebat! Kamu telah selesaikan semua set latihan!';
+        
+        speakBM("Tahniah! Kamu berjaya lulus set latihan ini.");
+
+        if (currentSetIndex < 9) {
+          nextBtn.style.display = 'block';
+          nextBtn.onclick = () => startSet(currentSetIndex + 1);
+        } else {
+          nextBtn.style.display = 'none';
+        }
+      } else {
+        document.getElementById('result-icon').innerText = '💪';
+        document.getElementById('result-title').innerText = 'Cuba Lagi!';
+        document.getElementById('result-subtitle').innerText = 'Kamu perlu sekurang-kurangnya 50 markah untuk lulus.';
+        badge.className = 'badge-status badge-fail';
+        badge.innerText = 'BELUM LULUS';
+        document.getElementById('result-message').innerText = 'Ulang semula set ini untuk buka set seterusnya.';
+        
+        speakBM("Cuba lagi. Kamu perlukan sekurang-kurangnya 50 markah.");
+
+        nextBtn.style.display = 'block';
+        nextBtn.innerText = 'Ulang Set Ini 🔄';
+        nextBtn.onclick = () => startSet(currentSetIndex);
+      }
+    }
+
+    function goHome() {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      if (currentAudioObj) currentAudioObj.pause();
+      renderMenu();
+    }
+
+    function confirmReset() {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      if (currentAudioObj) currentAudioObj.pause();
+
+      if (confirm("Adakah anda pasti ingin menetapkan semula semua markah?")) {
+        localStorage.clear();
+        unlockedSets = 1;
+        scoresHistory = Array(10).fill(0);
+        saveProgress();
+        renderMenu();
+        alert("Semua markah telah ditetapkan semula.");
+      }
+    }
+
+    window.onload = initApp;
+  </script>
+</body>
+</html>
